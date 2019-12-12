@@ -35,8 +35,6 @@ namespace AcceptReport
         {
             Email = textBox_Email.Text;
             GoTimer();
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
         }
 
         static void ProcessCreateAndSendReport(string arg)
@@ -50,6 +48,8 @@ namespace AcceptReport
             greetMethod.Invoke(instance, new object[] { arg });
             context.Unload();
             MessageBox.Show("Успешно отправлено!!!");
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
 
         private void GoTimer()
@@ -61,7 +61,7 @@ namespace AcceptReport
                 if (Time == TimeSpan.Zero)
                 {
                     ProcessCreateAndSendReport(Email);
-                    Time = TimeSpan.Zero;
+                    Time = TimeSpan.FromSeconds(double.Parse(textBox_Timer.Text));
                     Timer.Start();
                 }
                 Time = Time.Add(TimeSpan.FromSeconds(-1));
